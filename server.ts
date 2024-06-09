@@ -10,6 +10,7 @@ import * as express from 'express';
 import * as cors from 'cors';
 import { normalizePort } from './libs/normalizePort';
 import { connect, connection } from 'mongoose';
+import { previewRoute } from './routes/preview';
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => res.send('Backend for Kanban App by Dirk Brandon Lapitan'));
+
+app.use('/api/v1/preview' ,previewRoute);
 
 const PORT = normalizePort();
 

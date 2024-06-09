@@ -5,7 +5,8 @@ export interface IBoard{
     name: string,
     owner: string,
     editors: string[],
-    columns?: IColumn[]
+    columns?: IColumn[],
+    slugified: string
 }
 
 const boardSchema = new Schema<IBoard>({
@@ -20,7 +21,11 @@ const boardSchema = new Schema<IBoard>({
     editors: [{
         type: String,
         required: true
-    }]
+    }],
+    slugified: {
+        type: String,
+        required: true
+    }
 }, { timestamps: true });
 
 export const Board = model('Board', boardSchema);

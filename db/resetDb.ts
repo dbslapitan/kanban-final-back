@@ -5,6 +5,7 @@ import { Board } from "../schemas/board";
 import { Column } from "../schemas/column";
 import { Task } from "../schemas/task";
 import getRandomColor from "../libs/randomColor";
+import slugify from 'slugify';
 dotenv.config();
 
 const URI = process.env.URI;
@@ -28,7 +29,8 @@ const URI = process.env.URI;
         const { _id: boardId } = await Board.create({
             name: boards[i].name,
             owner: "preview",
-            editors: []
+            editors: [],
+            slugified: slugify(boards[i].name, {lower: true, strict: true})
         });
 
         for(let j = 0; j < boards[i].columns.length; j++){
