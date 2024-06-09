@@ -8,7 +8,8 @@
     "clean": "rimraf dist",
     "build": "tsc",
     "start-dev": "tsc-watch --onSuccess \"node dist/server.js\"",
-    "dev": "npm-run-all clean build start-dev"
+    "dev": "npm-run-all clean build start-dev",
+    "seed": "node dist/db/resetDb.js"
   },
   "author": "Dirk Brandon Lapitan | dblapitan",
   "license": "ISC",
