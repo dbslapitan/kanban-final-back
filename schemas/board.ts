@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IColumn } from "./column";
+import { Column, IColumn } from "./column";
 
 export interface IBoard{
     name: string,
@@ -26,6 +26,18 @@ const boardSchema = new Schema<IBoard>({
         type: String,
         required: true
     }
-}, { timestamps: true });
+}, 
+{ 
+    timestamps: true,
+    toObject: {virtuals: true},
+    toJSON: {virtuals: true}
+        
+ });
+
+boardSchema.virtual('columns', {
+    ref: 'Column',
+    localField: '_id',
+    foreignField: 'boardId'
+})
 
 export const Board = model('Board', boardSchema);

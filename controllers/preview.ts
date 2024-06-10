@@ -23,8 +23,7 @@ export const getPreviewColumns = async (request: Request, response: Response, ne
     const { id } = request.params;
 
     try{
-        const board = await Board.findOne({ slugified: id }).exec();
-        //const columns = await Column.find({boardId: id});
+        const board = await Board.findOne({ slugified: id }).populate({path: 'columns', model: Column});
         console.log(board);
         response.status(200).json(board);
     }
