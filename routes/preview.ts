@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { getFirstPreviewBoardName, getPreviewColumns } from '../controllers/preview';
+import { getFirstPreviewBoardName, getPreviewBoardNames, getPreviewColumns } from '../controllers/preview';
 
 export const previewRoute = Router();
 
 previewRoute.get('/', getFirstPreviewBoardName);
 
-previewRoute.get('/columns/:id', getPreviewColumns)
+previewRoute.get('/boards', getPreviewBoardNames);
+
+previewRoute.get('/columns/:slug', getPreviewColumns)

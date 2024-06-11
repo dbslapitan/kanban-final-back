@@ -30,8 +30,8 @@ const boardSchema = new Schema<IBoard>({
 { 
     timestamps: true,
     toObject: {virtuals: true},
-    toJSON: {virtuals: true}
-        
+    toJSON: {virtuals: true},
+    id: false
  });
 
 boardSchema.virtual('columns', {
