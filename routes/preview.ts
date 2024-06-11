@@ -7,4 +7,4 @@ previewRoute.get('/', getFirstPreviewBoardName);
 
 previewRoute.get('/boards', getPreviewBoardNames);
 
-previewRoute.get('/columns/:slug', getPreviewColumns)
+previewRoute.get('/columns/:slug', getPreviewColumns);

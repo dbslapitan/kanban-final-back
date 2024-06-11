@@ -21,6 +21,18 @@ const columnSchema = new Schema<IColumn>({
         type: String,
         required: true
     },
-}, { timestamps: true });
+}, 
+{ 
+    timestamps: true,
+    toObject: {virtuals: true},
+    toJSON: {virtuals: true},
+    id: false
+});
+
+columnSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'status'
+});
 
 export const Column = model('Column', columnSchema);

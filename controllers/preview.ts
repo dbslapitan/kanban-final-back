@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Board } from '../schemas/board';
 import { Column } from '../schemas/column';
+import { Task } from '../schemas/task';
 
 export const getFirstPreviewBoardName = async (request: Request, response: Response, next: NextFunction) => {
     try {
@@ -34,9 +35,8 @@ export const getPreviewColumns = async (request: Request, response: Response, ne
     const { slug } = request.params;
 
     try {
-        const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column }).select('columns');
-        console.log(board);
-        response.status(200).json(board);
+        const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks'}, select: 'name boardId color' });
+        response.status(200).json(board?.columns);
     }
     catch (e) {
         console.log(e);
