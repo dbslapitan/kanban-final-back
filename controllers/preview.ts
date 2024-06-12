@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { Board } from '../schemas/board';
 import { Column } from '../schemas/column';
 import { Task } from '../schemas/task';
+import slugify from 'slugify';
+import getRandomColor from '../libs/randomColor';
 
 export const getFirstPreviewBoardName = async (request: Request, response: Response, next: NextFunction) => {
     try {
@@ -37,6 +39,28 @@ export const getPreviewColumns = async (request: Request, response: Response, ne
     try {
         const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks'}, select: 'name boardId color' });
         response.status(200).json(board?.columns);
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const postPreviewBoard = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { name, columns } = request.body;
+
+    try {
+        const slugified = slugify(name, {lower: true, strict: true});
+        const board = await Board.find({slugified});
+        if(board.length){
+            return response.status(400).json('Already have a board with the same name.');
+        }
+        const { _id } = await Board.create({name, owner: 'preview', editors: [], slugified});
+        for(const column of columns){
+            await Column.create({name: column, boardId: _id, color: getRandomColor()});
+        }
+        response.status(201).json(slugified);
     }
     catch (e) {
         console.log(e);
