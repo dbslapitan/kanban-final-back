@@ -67,3 +67,40 @@ export const postPreviewBoard = async (request: Request, response: Response, nex
         response.status(500).json(e);
     }
 }
+
+export const getPreviewBoard = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { slug } = request.params;
+
+    try {
+        const board = await Board.findOne({slugified: slug}).select('name owner');
+        response.status(200).json(board);
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const deletePreviewBoard = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { id } = request.params;
+
+    try {
+        const board = await Board.findByIdAndDelete(id);
+        if(board){
+            const columns = await Column.find({boardId: board._id});
+            const ids = columns.map(column => column._id.toHexString());
+            await Column.deleteMany({boardId: board._id});
+            await Task.deleteMany({status: {$in: ids}});
+            response.sendStatus(204);
+        }
+        else{
+            response.sendStatus(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}

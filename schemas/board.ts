@@ -38,6 +38,6 @@ boardSchema.virtual('columns', {
     ref: 'Column',
     localField: '_id',
     foreignField: 'boardId'
-})
+});
 
 export const Board = model('Board', boardSchema);
