@@ -4,6 +4,7 @@ import { Column } from '../schemas/column';
 import { Task } from '../schemas/task';
 import slugify from 'slugify';
 import getRandomColor from '../libs/randomColor';
+import path = require('path');
 
 export const getFirstPreviewBoardName = async (request: Request, response: Response, next: NextFunction) => {
     try {
@@ -37,7 +38,7 @@ export const getPreviewColumns = async (request: Request, response: Response, ne
     const { slug } = request.params;
 
     try {
-        const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks'}, select: 'name boardId color' });
+        const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks' }, select: 'name boardId color' });
         response.status(200).json(board?.columns);
     }
     catch (e) {
@@ -51,14 +52,14 @@ export const postPreviewBoard = async (request: Request, response: Response, nex
     const { name, columns } = request.body;
 
     try {
-        const slugified = slugify(name, {lower: true, strict: true});
-        const board = await Board.find({slugified});
-        if(board.length){
+        const slugified = slugify(name, { lower: true, strict: true });
+        const board = await Board.find({ slugified });
+        if (board.length) {
             return response.status(400).json('Already have a board with the same name.');
         }
-        const { _id } = await Board.create({name, owner: 'preview', editors: [], slugified});
-        for(const column of columns){
-            await Column.create({name: column, boardId: _id, color: getRandomColor()});
+        const { _id } = await Board.create({ name, owner: 'preview', editors: [], slugified });
+        for (const column of columns) {
+            await Column.create({ name: column, boardId: _id, color: getRandomColor() });
         }
         response.status(201).json(slugified);
     }
@@ -73,11 +74,30 @@ export const getPreviewBoard = async (request: Request, response: Response, next
     const { slug } = request.params;
 
     try {
-        const board = await Board.findOne({slugified: slug}).select('name owner');
-        if(board){
+        const board = await Board.findOne({ slugified: slug }).select('name owner');
+        if (board) {
             response.status(200).json(board);
         }
-        else{
+        else {
+            response.sendStatus(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const getPreviewEditBoard = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { slug } = request.params;
+
+    try {
+        const board = await Board.findOne({ slugified: slug }).select('name owner slugified').populate({ path: 'columns', model: Column, select: 'name boardId' });
+        if (board) {
+            response.status(200).json(board);
+        }
+        else {
             response.sendStatus(404);
         }
     }
@@ -93,16 +113,42 @@ export const deletePreviewBoard = async (request: Request, response: Response, n
 
     try {
         const board = await Board.findByIdAndDelete(id);
-        if(board){
-            const columns = await Column.find({boardId: board._id});
+        if (board) {
+            const columns = await Column.find({ boardId: board._id });
             const ids = columns.map(column => column._id.toHexString());
-            await Column.deleteMany({boardId: board._id});
-            await Task.deleteMany({status: {$in: ids}});
+            await Column.deleteMany({ boardId: board._id });
+            await Task.deleteMany({ status: { $in: ids } });
             response.sendStatus(204);
         }
-        else{
+        else {
             response.sendStatus(404);
         }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const updatePreviewBoard = async (request: Request, response: Response, next: NextFunction) => {
+    
+    const { id } = request.params;
+    const { name, columns } = request.body;
+
+    try {
+
+        const board = await Board.findByIdAndUpdate(id, { name, slugified: slugify(name, {strict: true, lower: true}) }, {new: true});
+
+        for (let i = 0; i < columns.length; i++) {
+            if(columns[i]?._id){
+                const column = await Column.findByIdAndUpdate(columns[i]._id, {name: columns[i].name});
+            }
+            else{
+                const column = await Column.create({name: columns[i].name, boardId: board?._id, color: getRandomColor()});
+            }
+        }
+
+        response.status(200).json(board?.slugified);
     }
     catch (e) {
         console.log(e);
