@@ -4,7 +4,6 @@ import { Column } from '../schemas/column';
 import { Task } from '../schemas/task';
 import slugify from 'slugify';
 import getRandomColor from '../libs/randomColor';
-import path = require('path');
 
 export const getFirstPreviewBoardName = async (request: Request, response: Response, next: NextFunction) => {
     try {
@@ -214,6 +213,25 @@ export const deletePreviewTask = async (request: Request, response: Response, ne
         }
         else{
             response.send(404).json(`Task with id ${id} does not exist.`);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const postPreviewTask = async (request: Request, response: Response, next: NextFunction) => {
+    
+    const { body } = request;
+
+    try {
+        const task = await Task.create(body);
+        if(task){
+            response.sendStatus(201);
+        }
+        else{
+            response.sendStatus(400);
         }
     }
     catch (e) {
