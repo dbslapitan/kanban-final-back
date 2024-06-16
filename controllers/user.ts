@@ -44,8 +44,14 @@ export const getUser = async (request: Request, response: Response, next: NextFu
 export const patchUser = async (request: Request, response: Response, next: NextFunction) => {
 
     try {
-        const findUser = User.findByIdAndUpdate(request.params.id, request.body);
-        response.sendStatus(200);
+        const findUser = await User.findOne({username: request.body.username});
+        if(findUser){
+            response.status(400).json('Username already exist');
+        }
+        else{
+            const patchedUser = await User.findByIdAndUpdate(request.params.id, request.body);
+            response.sendStatus(200);
+        }
     }
     catch (e) {
         console.log(e);
