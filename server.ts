@@ -12,6 +12,7 @@ import { normalizePort } from './libs/normalizePort';
 import { connect, connection } from 'mongoose';
 import { previewRoute } from './routes/preview';
 import { userRoute } from './routes/user';
+import { authRoute } from './routes/auth';
 
 const app = express();
 
@@ -28,6 +29,8 @@ app.get('/', (req, res) => res.send('Backend for Kanban App by Dirk Brandon Lapi
 app.use('/api/v1/preview' ,previewRoute);
 
 app.use('/api/v1/username', userRoute);
+
+app.use('/api/v1', authRoute);
 
 const PORT = normalizePort();
 
