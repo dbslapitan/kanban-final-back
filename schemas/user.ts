@@ -12,7 +12,8 @@ export const userSchema = new Schema<User>({
     },
     username: {
         type: String,
-        required: true
+        required: true,
+        match: /^[\w-.]+$/
     }
 });
 
