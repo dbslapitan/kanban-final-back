@@ -4,9 +4,8 @@ import { User } from "../schemas/user";
 export const postUser = async (request: Request, response: Response, next: NextFunction) => {
 
     try {
-        console.log('got here');
-        const user = await User.create(request.body);
-        response.status(201).json(user._id);
+        console.log(request.body);
+        response.status(201).json('1234');
     }
     catch (e) {
         console.log(e);
