@@ -20,7 +20,7 @@ const URI = process.env.URI;
     connection.dropCollection('boards');
     connection.dropCollection('columns');
     connection.dropCollection('tasks');
-    connection.dropCollection('subtasks');
+    connection.dropCollection('users');
     console.log('Collections dropped...');
 
     console.log('Populating boards...');
