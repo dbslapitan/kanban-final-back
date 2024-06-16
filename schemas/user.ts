@@ -1,12 +1,12 @@
 import { Schema, model } from "mongoose"
 
 export interface User{
-    email: string,
+    authId: string,
     username: string
 }
 
 export const userSchema = new Schema<User>({
-    email: {
+    authId: {
         type: String,
         required: true
     },

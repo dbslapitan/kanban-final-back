@@ -4,7 +4,7 @@ import { User } from "../schemas/user";
 export const postUser = async (request: Request, response: Response, next: NextFunction) => {
 
     try {
-        const user = await User.findOne({email: request.body.email}).select('email username'); 
+        const user = await User.findOne({authId: request.body.authId}).select('authId username'); 
         if(user){
             response.status(200).json(user);
         }
@@ -27,7 +27,7 @@ export const postUser = async (request: Request, response: Response, next: NextF
 export const getUser = async (request: Request, response: Response, next: NextFunction) => {
 
     try {
-        const user = await User.findById(request.params.id).select('username email');
+        const user = await User.findById(request.params.id).select('username authId');
         if(user){
             response.status(200).json(user);
         }
