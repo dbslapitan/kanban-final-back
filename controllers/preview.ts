@@ -66,8 +66,8 @@ export const postPreviewBoard = async (request: Request, response: Response, nex
 
     try {
         const slugified = slugify(name, { lower: true, strict: true });
-        const board = await Board.find({ slugified });
-        if (board.length) {
+        const board = await Board.findOne({ slugified, owner: 'preview' });
+        if (board) {
             return response.status(400).json('Already have a board with the same name.');
         }
         const { _id } = await Board.create({ name, owner: 'preview', editors: [], slugified });

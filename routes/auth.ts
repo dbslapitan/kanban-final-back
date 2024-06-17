@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getBoardNames, getFirstBoardName } from '../controllers/auth';
+import { getBoardNames, getFirstBoardName, postBoard } from '../controllers/auth';
 import { auth } from 'express-oauth2-jwt-bearer';
 
 const checkJwt = auth({
@@ -12,3 +12,5 @@ export const authRoute = Router();
 authRoute.get('/:username', checkJwt, getFirstBoardName);
 
 authRoute.get('/:username/boards', checkJwt, getBoardNames);
+
+authRoute.post('/:username/board', checkJwt, postBoard);
