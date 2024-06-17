@@ -87,7 +87,7 @@ export const getPreviewBoard = async (request: Request, response: Response, next
     const { slug } = request.params;
 
     try {
-        const board = await Board.findOne({ slugified: slug }).select('name owner');
+        const board = await Board.findOne({ slugified: slug, owner: 'preview' }).select('name owner');
         if (board) {
             response.status(200).json(board);
         }

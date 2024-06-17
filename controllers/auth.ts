@@ -108,3 +108,45 @@ export const patchBoard = async (request: Request, response: Response, next: Nex
         response.status(500).json(e);
     }
 }
+
+export const deleteBoard = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { id } = request.params;
+
+    try {
+        const board = await Board.findByIdAndDelete(id);
+        if (board) {
+            const columns = await Column.find({ boardId: board._id });
+            const ids = columns.map(column => column._id.toHexString());
+            await Column.deleteMany({ boardId: board._id });
+            await Task.deleteMany({ status: { $in: ids } });
+            response.sendStatus(204);
+        }
+        else {
+            response.sendStatus(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const getBoard = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { slug, username } = request.params;
+
+    try {
+        const board = await Board.findOne({ slugified: slug, owner: username }).select('name owner');
+        if (board) {
+            response.status(200).json(board);
+        }
+        else {
+            response.sendStatus(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
