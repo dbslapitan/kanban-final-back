@@ -150,3 +150,17 @@ export const getBoard = async (request: Request, response: Response, next: NextF
         response.status(500).json(e);
     }
 }
+
+export const getColumnsMin = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { slug } = request.params;
+
+    try {
+        const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column, select: 'name boardId' });
+        response.status(200).json(board?.columns);
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
