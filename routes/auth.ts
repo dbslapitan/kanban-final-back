@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { deleteBoard, getBoard, getBoardNames, getColumns, getColumnsMin, getFirstBoardName, patchBoard, postBoard, postTask } from '../controllers/auth';
+import { deleteBoard, getBoard, getBoardNames, getColumns, getColumnsMin, getFirstBoardName, getTask, patchBoard, patchTask, postBoard, postTask } from '../controllers/auth';
 import { auth } from 'express-oauth2-jwt-bearer';
 
 const checkJwt = auth({
@@ -26,3 +26,7 @@ authRoute.get('/:username/board/:slug', checkJwt, getBoard);
 authRoute.get('/:username/columns/min/:slug', checkJwt, getColumnsMin);
 
 authRoute.post('/:username/task', checkJwt, postTask);
+
+authRoute.get('/:username/task/:id', checkJwt, getTask);
+
+authRoute.patch('/:username/task/:id', checkJwt, patchTask);

@@ -184,3 +184,36 @@ export const postTask = async (request: Request, response: Response, next: NextF
         response.status(500).json(e);
     }
 }
+
+export const getTask = async (request: Request, response: Response, next: NextFunction) => {
+    
+    const { id } = request.params;
+
+    try {
+        const task = await Task.findById(id).select('title description status subtasks');
+        if(task){
+            response.status(200).json(task);
+        }
+        else{
+            response.status(404).json(`Task with an id of ${id} is not found.`);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const patchTask = async (request: Request, response: Response, next: NextFunction) => {
+    
+    const { id } = request.params;
+
+    try {
+        const task = await Task.findByIdAndUpdate(id, request.body);
+        response.sendStatus(200);
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
