@@ -164,3 +164,23 @@ export const getColumnsMin = async (request: Request, response: Response, next: 
         response.status(500).json(e);
     }
 }
+
+export const postTask = async (request: Request, response: Response, next: NextFunction) => {
+    
+    const { body } = request;
+    console.log(body);
+
+    try {
+        const task = await Task.create(body);
+        if(task){
+            response.sendStatus(201);
+        }
+        else{
+            response.sendStatus(400);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
