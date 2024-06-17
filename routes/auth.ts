@@ -21,4 +21,4 @@ authRoute.patch('/:username/board/edit/:id', checkJwt, patchBoard);
 
 authRoute.delete('/:username/board/:id', checkJwt, deleteBoard);
 
-authRoute.get('/board/:slug', getBoard);
+authRoute.get('/:username/board/:slug', checkJwt, getBoard);
