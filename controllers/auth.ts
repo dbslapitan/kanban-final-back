@@ -3,9 +3,8 @@ import { User } from "../schemas/user";
 import { Board } from "../schemas/board";
 
 export const getFirstBoardName = async (request: Request, response: Response, next: NextFunction) => {
-
-
     try {
+        console.log(request.auth);
         const user = await User.findOne({username: request.params.username});
         if(user){
             const boards = await Board.find({owner: user.username});
