@@ -168,7 +168,6 @@ export const getColumnsMin = async (request: Request, response: Response, next: 
 export const postTask = async (request: Request, response: Response, next: NextFunction) => {
     
     const { body } = request;
-    console.log(body);
 
     try {
         const task = await Task.create(body);
@@ -211,6 +210,44 @@ export const patchTask = async (request: Request, response: Response, next: Next
     try {
         const task = await Task.findByIdAndUpdate(id, request.body);
         response.sendStatus(200);
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const deleteTask = async (request: Request, response: Response, next: NextFunction) => {
+    
+    const { id } = request.params;
+
+    try {
+        const task = await Task.findByIdAndDelete(id);
+        if(task){
+            response.sendStatus(200);
+        }
+        else{
+            response.send(404).json(`Task with id ${id} does not exist.`);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const getEditBoard = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { slug } = request.params;
+
+    try {
+        const board = await Board.findOne({ slugified: slug }).select('name owner slugified').populate({ path: 'columns', model: Column, select: 'name boardId' });
+        if (board) {
+            response.status(200).json(board);
+        }
+        else {
+            response.sendStatus(404);
+        }
     }
     catch (e) {
         console.log(e);
