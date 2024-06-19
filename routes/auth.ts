@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { deleteBoard, deleteTask, getBoard, getBoardNames, getColumns, getColumnsMin, getEditBoard, getEditors, getFirstBoardName, getTask, patchBoard, patchTask, postBoard, postTask } from '../controllers/auth';
+import { deleteBoard, deleteTask, getBoard, getBoardNames, getColumns, getColumnsMin, getEditBoard, getEditors, getFirstBoardName, getTask, patchBoard, patchBoardEditors, patchTask, postBoard, postTask } from '../controllers/auth';
 import { auth } from 'express-oauth2-jwt-bearer';
 import { isOwnerBoard } from '../controllers/middlewares/isOwnerBoard';
 
@@ -37,3 +37,5 @@ authRoute.patch('/:username/task/:id', checkJwt, patchTask);
 authRoute.delete('/:username/task/:id', checkJwt, deleteTask);
 
 authRoute.get('/:username/board/edit/:slug', checkJwt, getEditBoard);
+
+authRoute.patch('/:username/board/editors/:slug', checkJwt, patchBoardEditors);

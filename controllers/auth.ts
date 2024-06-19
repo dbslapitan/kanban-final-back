@@ -287,3 +287,22 @@ export const getEditBoard = async (request: Request, response: Response, next: N
         response.status(500).json(e);
     }
 }
+
+export const patchBoardEditors = async (request: Request, response: Response, next: NextFunction) => {
+
+    const { slug, username } = request.params;
+
+    try {
+        const board = await Board.findOneAndReplace({owner: username, slugified: slug}, );
+        if (board) {
+            response.status(200).json(board);
+        }
+        else {
+            response.sendStatus(404);
+        }
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
