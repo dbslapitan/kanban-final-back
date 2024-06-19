@@ -37,8 +37,14 @@ export const getPreviewColumns = async (request: Request, response: Response, ne
     const { slug } = request.params;
 
     try {
-        const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks' }, select: 'name boardId color' });
-        response.status(200).json(board?.columns);
+
+        const board = await Board.findOne({ slugified: slug, owner: 'preview' }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks' }, select: 'name boardId color' });
+        if(board?.columns){
+            response.status(200).json(board?.columns);
+        }
+        else{
+            response.sendStatus(401);
+        }
     }
     catch (e) {
         console.log(e);
@@ -51,7 +57,7 @@ export const getPreviewColumnsMin = async (request: Request, response: Response,
     const { slug } = request.params;
 
     try {
-        const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column, select: 'name boardId' });
+        const board = await Board.findOne({ slugified: slug, owner: 'preview' }).populate({ path: 'columns', model: Column, select: 'name boardId' });
         response.status(200).json(board?.columns);
     }
     catch (e) {
@@ -106,7 +112,7 @@ export const getPreviewEditBoard = async (request: Request, response: Response, 
     const { slug } = request.params;
 
     try {
-        const board = await Board.findOne({ slugified: slug }).select('name owner slugified').populate({ path: 'columns', model: Column, select: 'name boardId' });
+        const board = await Board.findOne({ slugified: slug, owner: 'preview' }).select('name owner slugified').populate({ path: 'columns', model: Column, select: 'name boardId' });
         if (board) {
             response.status(200).json(board);
         }
