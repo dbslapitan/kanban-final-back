@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { User } from "../schemas/user";
 
 export const postUser = async (request: Request, response: Response, next: NextFunction) => {
-
     try {
         const user = await User.findOne({authId: request.body.authId}).select('authId username'); 
         if(user){
@@ -25,7 +24,6 @@ export const postUser = async (request: Request, response: Response, next: NextF
 }
 
 export const getUser = async (request: Request, response: Response, next: NextFunction) => {
-
     try {
         const user = await User.findById(request.params.id).select('username authId');
         if(user){
@@ -41,8 +39,18 @@ export const getUser = async (request: Request, response: Response, next: NextFu
     }
 }
 
-export const patchUser = async (request: Request, response: Response, next: NextFunction) => {
+export const getUsers = async (request: Request, response: Response, next: NextFunction) => {
+    try {
+        const users = await User.find({username: {$regex: request.params.keyword, $options: 'i'}}).select('username');
+        response.status(200).json(users.map(user => user.username));
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
 
+export const patchUser = async (request: Request, response: Response, next: NextFunction) => {
     try {
         const findUser = await User.findOne({username: request.body.username});
         if(findUser){
