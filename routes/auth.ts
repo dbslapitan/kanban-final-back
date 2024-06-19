@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { deleteBoard, deleteTask, getBoard, getBoardNames, getColumns, getColumnsMin, getEditBoard, getFirstBoardName, getTask, patchBoard, patchTask, postBoard, postTask } from '../controllers/auth';
+import { deleteBoard, deleteTask, getBoard, getBoardNames, getColumns, getColumnsMin, getEditBoard, getEditors, getFirstBoardName, getTask, patchBoard, patchTask, postBoard, postTask } from '../controllers/auth';
 import { auth } from 'express-oauth2-jwt-bearer';
+import { isOwnerBoard } from '../controllers/middlewares/isOwnerBoard';
 
 const checkJwt = auth({
     audience: process.env.AUDIENCE,
@@ -9,11 +10,13 @@ const checkJwt = auth({
 
 export const authRoute = Router();
 
-authRoute.get('/:username', checkJwt, getFirstBoardName);
+authRoute.get('/:username', checkJwt, isOwnerBoard, getFirstBoardName);
 
-authRoute.post('/:username/board', checkJwt, postBoard);
+authRoute.post('/:username/board', checkJwt, isOwnerBoard, postBoard);
 
-authRoute.get('/:username/boards', checkJwt, getBoardNames);
+authRoute.get('/:username/boards', checkJwt, isOwnerBoard, getBoardNames);
+
+authRoute.get('/:username/board/editors/:slug', checkJwt, getEditors);
 
 authRoute.get('/:username/columns/:slug', checkJwt, getColumns);
 

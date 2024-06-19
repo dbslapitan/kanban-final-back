@@ -46,6 +46,18 @@ export const getBoardNames = async (request: Request, response: Response, next: 
     }
 }
 
+export const getEditors = async (request: Request, response: Response, next: NextFunction) => {
+    try {
+        const board = await Board.findOne({slugified: request.params.slug, owner: request.params.username});
+        console.log(board?.editors);
+        response.json(board?.editors);
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
 export const postBoard = async (request: Request, response: Response, next: NextFunction) => {
     try {
         const { name, columns } = request.body;
