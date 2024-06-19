@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { Board } from '../schemas/board';
+import { Board, IBoard } from '../schemas/board';
 import { Column } from '../schemas/column';
 import { Task } from '../schemas/task';
 import slugify from 'slugify';
@@ -151,13 +151,29 @@ export const updatePreviewBoard = async (request: Request, response: Response, n
     try {
 
         const board = await Board.findByIdAndUpdate(id, { name, slugified: slugify(name, {strict: true, lower: true}) }, {new: true});
+        if(!board){
+            response.sendStatus(404);
+        }
+        const currentIds = [];
 
         for (let i = 0; i < columns.length; i++) {
             if(columns[i]?._id){
-                const column = await Column.findByIdAndUpdate(columns[i]._id, {name: columns[i].name});
+                const getColumn = await Column.findById(columns[i]._id);
+                if(getColumn?.boardId.toString() === id){
+                    const column = await Column.findByIdAndUpdate(columns[i]._id, {name: columns[i].name});
+                    currentIds.push(column?._id.toHexString());
+                }
             }
             else{
                 const column = await Column.create({name: columns[i].name, boardId: board?._id, color: getRandomColor()});
+                currentIds.push(column?._id.toHexString());
+            }
+        }
+        const savedColumns = await Column.find({boardId: board?._id});
+        
+        for(let i = 0; i < savedColumns.length; i++){
+            if(!currentIds.some(currentId => currentId === savedColumns[i]._id.toHexString())){
+                await Column.findByIdAndDelete(savedColumns[i]._id);
             }
         }
 
