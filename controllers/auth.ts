@@ -30,11 +30,12 @@ export const getFirstBoardName = async (request: Request, response: Response, ne
 
 export const getBoardNames = async (request: Request, response: Response, next: NextFunction) => {
     try {
-        const {username} = request.params;
+        const username = request.auth?.payload.username;
         const user = await User.findOne({username});
         if(user){
-            const boards = await Board.find({owner: user.username}).select('name slugified');
-            response.status(200).json(boards);
+            const myBoards = await Board.find({owner: user.username}).select('name slugified owner');
+            const otherBoards = await Board.find({editors: username}).select('name slugified owner');
+            response.status(200).json({myBoards, otherBoards});
         }
         else{
             response.status(404).json('Username does not exist.');
@@ -187,7 +188,7 @@ export const getColumnsMin = async (request: Request, response: Response, next: 
     const { slug } = request.params;
 
     try {
-        const board = await Board.findOne({ slugified: slug }).populate({ path: 'columns', model: Column, select: 'name boardId' });
+        const board = await Board.findOne({ slugified: slug, owner: request.params.username }).populate({ path: 'columns', model: Column, select: 'name boardId' });
         response.status(200).json(board?.columns);
     }
     catch (e) {

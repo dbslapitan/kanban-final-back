@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import { deleteBoard, deleteTask, getBoard, getBoardNames, getColumns, getColumnsMin, getEditBoard, getEditors, getFirstBoardName, getTask, patchBoard, patchBoardEditors, patchTask, postBoard, postTask } from '../controllers/auth';
 import { auth } from 'express-oauth2-jwt-bearer';
-import { isOwnerBoard } from '../controllers/middlewares/isOwnerBoard';
+import { isOwnerBoardId, isOwnerBoardSlug } from '../controllers/middlewares/isOwnerBoard';
+import { isEditorBoardSlug } from '../controllers/middlewares/isEditorBoard';
+import { isEditorTask, isEditorTaskId } from '../controllers/middlewares/isEditorTask';
 
 const checkJwt = auth({
     audience: process.env.AUDIENCE,
@@ -10,32 +12,32 @@ const checkJwt = auth({
 
 export const authRoute = Router();
 
-authRoute.get('/:username', checkJwt, isOwnerBoard, getFirstBoardName);
+authRoute.get('/:username', checkJwt, isOwnerBoardSlug, getFirstBoardName);
 
-authRoute.post('/:username/board', checkJwt, isOwnerBoard, postBoard);
+authRoute.post('/:username/board', checkJwt, isOwnerBoardSlug, postBoard);
 
-authRoute.get('/:username/boards', checkJwt, isOwnerBoard, getBoardNames);
+authRoute.get('/:username/boards', checkJwt, getBoardNames);
 
-authRoute.get('/:username/board/editors/:slug', checkJwt, getEditors);
+authRoute.get('/:username/board/editors/:slug', checkJwt, isOwnerBoardSlug, getEditors);
 
-authRoute.get('/:username/columns/:slug', checkJwt, getColumns);
+authRoute.get('/:username/columns/:slug', checkJwt, isEditorBoardSlug, getColumns);
 
-authRoute.patch('/:username/board/edit/:id', checkJwt, patchBoard);
+authRoute.patch('/:username/board/edit/:id', checkJwt, isOwnerBoardId, patchBoard);
 
-authRoute.delete('/:username/board/:id', checkJwt, deleteBoard);
+authRoute.delete('/:username/board/:id', checkJwt, isOwnerBoardId, deleteBoard);
 
-authRoute.get('/:username/board/:slug', checkJwt, getBoard);
+authRoute.get('/:username/board/:slug', checkJwt, isEditorBoardSlug, getBoard);
 
-authRoute.get('/:username/columns/min/:slug', checkJwt, getColumnsMin);
+authRoute.get('/:username/columns/min/:slug', checkJwt, isEditorBoardSlug, getColumnsMin);
 
-authRoute.post('/:username/task', checkJwt, postTask);
+authRoute.post('/:username/task', checkJwt, isEditorTask, postTask);
 
-authRoute.get('/:username/task/:id', checkJwt, getTask);
+authRoute.get('/:username/task/:id', checkJwt, isEditorTaskId, getTask);
 
-authRoute.patch('/:username/task/:id', checkJwt, patchTask);
+authRoute.patch('/:username/task/:id', checkJwt, isEditorTaskId, patchTask);
 
-authRoute.delete('/:username/task/:id', checkJwt, deleteTask);
+authRoute.delete('/:username/task/:id', checkJwt, isEditorTaskId, deleteTask);
 
-authRoute.get('/:username/board/edit/:slug', checkJwt, getEditBoard);
+authRoute.get('/:username/board/edit/:slug', checkJwt, isOwnerBoardSlug, getEditBoard);
 
-authRoute.patch('/:username/board/editors/:slug', checkJwt, isOwnerBoard, patchBoardEditors);
+authRoute.patch('/:username/board/editors/:slug', checkJwt, isOwnerBoardSlug, patchBoardEditors);
