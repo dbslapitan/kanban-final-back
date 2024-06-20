@@ -6,7 +6,7 @@ import getRandomColor from "../libs/randomColor";
 import { Column } from "../schemas/column";
 import { Task } from "../schemas/task";
 
-export const getFirstBoardName = async (request: Request, response: Response, next: NextFunction) => {
+export const getFirstBoardName = async (request: Request, response: Response, next: NextFunction) => {  
     try {
         const user = await User.findOne({username: request.params.username});
         if(user){
@@ -49,7 +49,6 @@ export const getBoardNames = async (request: Request, response: Response, next: 
 export const getEditors = async (request: Request, response: Response, next: NextFunction) => {
     try {
         const board = await Board.findOne({slugified: request.params.slug, owner: request.params.username});
-        console.log(board?.editors);
         response.json(board?.editors);
     }
     catch (e) {
@@ -106,7 +105,6 @@ export const patchBoard = async (request: Request, response: Response, next: Nex
     const { name, columns } = request.body;
 
     try {
-
         const board = await Board.findByIdAndUpdate(id, { name, slugified: slugify(name, {strict: true, lower: true}) }, {new: true});
         if(!board){
             response.sendStatus(404);
@@ -220,7 +218,6 @@ export const postTask = async (request: Request, response: Response, next: NextF
 export const getTask = async (request: Request, response: Response, next: NextFunction) => {
     
     const { id } = request.params;
-
     try {
         const task = await Task.findById(id).select('title description status subtasks');
         if(task){
@@ -293,8 +290,9 @@ export const patchBoardEditors = async (request: Request, response: Response, ne
     const { slug, username } = request.params;
 
     try {
-        const board = await Board.findOneAndReplace({owner: username, slugified: slug}, );
+        const board = await Board.findOne({owner: username, slugified: slug}).select('name slugified');
         if (board) {
+            await Board.findOneAndReplace({owner: username, slugified: slug}, {editors: request.body.editors, name: board.name, slugified: slug, owner: username});
             response.status(200).json(board);
         }
         else {

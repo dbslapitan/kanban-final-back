@@ -38,4 +38,4 @@ authRoute.delete('/:username/task/:id', checkJwt, deleteTask);
 
 authRoute.get('/:username/board/edit/:slug', checkJwt, getEditBoard);
 
-authRoute.patch('/:username/board/editors/:slug', checkJwt, patchBoardEditors);
+authRoute.patch('/:username/board/editors/:slug', checkJwt, isOwnerBoard, patchBoardEditors);
