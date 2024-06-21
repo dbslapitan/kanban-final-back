@@ -86,7 +86,7 @@ export const getColumns = async (request: Request, response: Response, next: Nex
     const {username} = request.params;
 
     try {
-        const board = await Board.findOne({ slugified: slug, owner: username }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks' }, select: 'name boardId color' });
+        const board = await Board.findOne({ slugified: slug, owner: username }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks updatedAt', options: {sort: {updatedAt: 1}}  }, select: 'name boardId color' });
         if(!!board?.columns){
             response.status(200).json(board?.columns);
         }
@@ -239,7 +239,7 @@ export const patchTask = async (request: Request, response: Response, next: Next
     const { id } = request.params;
 
     try {
-        const task = await Task.findByIdAndUpdate(id, request.body);
+        const task = await Task.findByIdAndUpdate(id, request.body, {new: true});
         response.sendStatus(200);
     }
     catch (e) {

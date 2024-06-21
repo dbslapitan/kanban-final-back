@@ -34,7 +34,7 @@ authRoute.post('/:username/task', checkJwt, isEditorTask, postTask);
 
 authRoute.get('/:username/task/:id', checkJwt, isEditorTaskId, getTask);
 
-authRoute.patch('/:username/task/:id', checkJwt, isEditorTaskId, patchTask);
+authRoute.patch('/:username/task/:id', checkJwt, patchTask);
 
 authRoute.delete('/:username/task/:id', checkJwt, isEditorTaskId, deleteTask);
 

@@ -24,7 +24,7 @@ export const getFirstPreviewBoardName = async (request: Request, response: Respo
 export const getPreviewBoardNames = async (request: Request, response: Response, next: NextFunction) => {
     try {
         const boards = await Board.find({ owner: 'preview' }).select('name slugified');
-        response.status(200).json(boards);
+        response.status(200).json({myBoards: boards, otherBoards: []});
     }
     catch (e) {
         console.log(e);
