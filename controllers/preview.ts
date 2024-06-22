@@ -215,6 +215,20 @@ export const patchPreviewTask = async (request: Request, response: Response, nex
     const { id } = request.params;
 
     try {
+        const task = await Task.findByIdAndUpdate(id, request.body, {timestamps: false});
+        response.sendStatus(200);
+    }
+    catch (e) {
+        console.log(e);
+        response.status(500).json(e);
+    }
+}
+
+export const patchPreviewTaskUpdate = async (request: Request, response: Response, next: NextFunction) => {
+    
+    const { id } = request.params;
+
+    try {
         const task = await Task.findByIdAndUpdate(id, request.body);
         response.sendStatus(200);
     }

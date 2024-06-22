@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { deletePreviewBoard, deletePreviewTask, getFirstPreviewBoardName, getPreviewBoard, getPreviewBoardNames, getPreviewColumns, getPreviewColumnsMin, getPreviewEditBoard, getPreviewTask, patchPreviewTask, postPreviewBoard, postPreviewTask, updatePreviewBoard } from '../controllers/preview';
+import { deletePreviewBoard, deletePreviewTask, getFirstPreviewBoardName, getPreviewBoard, getPreviewBoardNames, getPreviewColumns, getPreviewColumnsMin, getPreviewEditBoard, getPreviewTask, patchPreviewTask, patchPreviewTaskUpdate, postPreviewBoard, postPreviewTask, updatePreviewBoard } from '../controllers/preview';
 
 export const previewRoute = Router();
 
@@ -24,6 +24,8 @@ previewRoute.delete('/board/:id', deletePreviewBoard);
 previewRoute.get('/task/:id', getPreviewTask);
 
 previewRoute.patch('/task/:id', patchPreviewTask);
+
+previewRoute.patch('/task/update/:id', patchPreviewTaskUpdate);
 
 previewRoute.delete('/task/:id', deletePreviewTask);
 

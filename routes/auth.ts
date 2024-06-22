@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { deleteBoard, deleteTask, getBoard, getBoardNames, getColumns, getColumnsMin, getEditBoard, getEditors, getFirstBoardName, getTask, patchBoard, patchBoardEditors, patchTask, postBoard, postTask } from '../controllers/auth';
+import { deleteBoard, deleteTask, getBoard, getBoardNames, getColumns, getColumnsMin, getEditBoard, getEditors, getFirstBoardName, getTask, patchBoard, patchBoardEditors, patchTask, patchTaskUpdate, postBoard, postTask } from '../controllers/auth';
 import { auth } from 'express-oauth2-jwt-bearer';
 import { isOwnerBoardId, isOwnerBoardSlug } from '../controllers/middlewares/isOwnerBoard';
 import { isEditorBoardSlug } from '../controllers/middlewares/isEditorBoard';
@@ -35,6 +35,8 @@ authRoute.post('/:username/task', checkJwt, isEditorTask, postTask);
 authRoute.get('/:username/task/:id', checkJwt, isEditorTaskId, getTask);
 
 authRoute.patch('/:username/task/:id', checkJwt, patchTask);
+
+authRoute.patch('/:username/task/update/:id', checkJwt, patchTaskUpdate);
 
 authRoute.delete('/:username/task/:id', checkJwt, isEditorTaskId, deleteTask);
 
