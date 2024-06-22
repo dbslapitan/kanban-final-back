@@ -38,7 +38,7 @@ export const getPreviewColumns = async (request: Request, response: Response, ne
 
     try {
 
-        const board = await Board.findOne({ slugified: slug, owner: 'preview' }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks' }, select: 'name boardId color' });
+        const board = await Board.findOne({ slugified: slug, owner: 'preview' }).populate({ path: 'columns', model: Column, populate: { path: 'tasks', model: Task, select: 'title description status subtasks', options: {sort: {updatedAt: 1}} }, select: 'name boardId color' });
         if(board?.columns){
             response.status(200).json(board?.columns);
         }
