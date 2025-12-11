@@ -22,6 +22,9 @@ connect(URI as string);
 connection.on('connected', () => console.log('Connected to MongoDB...'));
 
 app.use(cors());
+
+app.options('*', cors());
+
 app.use(express.json());
 
 app.get('/', (req, res) => res.send('Backend for Kanban App by Dirk Brandon Lapitan'));
