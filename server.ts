@@ -22,7 +22,7 @@ connect(URI as string);
 connection.on('connected', () => console.log('Connected to MongoDB...'));
 
 app.use(cors({
-  origin: "*",   // or your frontend origin
+  origin: "https://kanban.dblapitan.dev/",   // or your frontend origin
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
