@@ -21,15 +21,7 @@ const URI = process.env.URI;
 connect(URI as string);
 connection.on('connected', () => console.log('Connected to MongoDB...'));
 
-app.use(cors({
-  origin: "https://kanban.dblapitan.dev/",   // or your frontend origin
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
-
-app.options('*', cors());
-
+app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => res.send('Backend for Kanban App by Dirk Brandon Lapitan'));
