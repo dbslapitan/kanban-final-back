@@ -21,7 +21,11 @@ const URI = process.env.URI;
 connect(URI as string);
 connection.on('connected', () => console.log('Connected to MongoDB...'));
 
-app.use(cors());
+app.use(cors({
+  origin: "*",   // or your frontend origin
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 app.options('*', cors());
 
